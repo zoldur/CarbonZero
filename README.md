@@ -14,7 +14,7 @@ bash carbonzero_install.sh
 After the MN is up and running, you need to configure the desktop wallet accordingly. Here are the steps:
 1. Open the CarbonZero Desktop Wallet.
 2. Go to RECEIVE and create a New Address: **MN1**
-3. Send **1000** BTCZ to **MN1**. You need to send all 1000 coins in one single transaction.
+3. Send **1000** CZE to **MN1**. You need to send all 1000 coins in one single transaction.
 4. Wait for 15 confirmations.
 5. Go to **Help -> "Debug Window - Console"**
 6. Type the following command: **masternode outputs**
@@ -53,6 +53,20 @@ systemctl is-enabled CarbonZero #To check if CarbonZero service is enabled on bo
 ```
 ***
 
+## Masternode update:
+In order to update your CarbonZero Masternode to version 1.3.0.0, please run the following commands:
+```
+cd /tmp
+wget -N https://github.com/zoldur/CarbonZero/releases/download/v1.3.0.0/carbonzero.tar.gz
+systemctl stop CarbonZero
+tar xvzf carbonzer.tar.gz
+mv carbonzerod carbonzero-cli /usr/local/bin
+systemctl start CarbonZero
+rm carbonzer.tar.gz
+cd -
+```
+Open your desktop wallet and start the node from there.
+***
 
 ## Donations
 
