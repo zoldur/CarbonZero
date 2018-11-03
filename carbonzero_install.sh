@@ -23,17 +23,20 @@ NC='\033[0m'
 function delete_old() {
   echo -e "Checking and backing up old Carbon installation"
   apt -y install jq >/dev/null 2>&1
-  PROTOCOL_VERSION=$($COIN_PATH$COIN_CLI getinfo | jq .protocolversion)
+  PROTOCOL_VERSION=$($COIN_PATH$COIN_CLI getinfo 2>/dev/null | jq .protocolversion)
   if [[ "$PROTOCOL_VERSION" -eq 70933 ]]
   then
     echo -e "${RED}$COIN_NAME is already installed.${NC}"
     exit 0
-  else
+  elif [[ "$PROTOCOL_VERSION" -lt 70933 ]]
+  then
     systemctl stop $COIN_NAME.service >/dev/null 2>&1
     $COIN_PATH$COIN_CLI stop >/dev/null 2>&1
     rm $COIN_PATH$COIN_DAEMON $COIN_PATH$COIN_CLI >/dev/null 2>&1
     rm /etc/systemd/system/$COIN_NAME.service >/dev/null 2>&1
     mv $CONFIGFOLDER $CONFIGFOLDER.$(echo $(date +%d-%m-%Y))
+  else
+    echo "Continue with normal installation" 
   fi
 }
 
