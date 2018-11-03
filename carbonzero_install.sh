@@ -6,7 +6,7 @@ CONFIGFOLDER='/root/.carbonzero'
 COIN_DAEMON='carbonzerod'
 COIN_CLI='carbonzero-cli'
 COIN_PATH='/usr/local/bin/'
-COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v1.3.0.0/carbonzero.tar.gz'
+COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v2.0.0.0/carbonzero.tar.gz'
 COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 COIN_NAME='CarbonZero'
 COIN_PORT=51212
@@ -19,6 +19,22 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
+
+function delete_old() {
+  echo -e "Checking and backing up old Carbon installation"
+  PROTOCOL_VERSION=$($COIN_PATH$COIN_CLI getinfo | jq .protocolversion)
+  if [[ "$PROTOCOL_VERSION" -eq 70933 ]]
+  then
+    echo -e "${RED}$COIN_NAME is already installed.${NC}"
+    exit 0
+  else
+    systemctl stop $COIN_NAME.service >/dev/null 2>&1
+    $COIN_PATH$COIN_CLI stop >/dev/null 2>&1
+    rm $COIN_PATH$COIN_DAEMON $COIN_PATH$COIN_CLI >/dev/null 2>&1
+    rm /etc/systemd/system/$COIN_NAME.service >/dev/null 2>&1
+    mv $CONFIGFOLDER $CONFIGFOLDER.$(echo $(date +%d-%m-%Y))
+  fi
+}
 
 function download_node() {
   echo -e "Prepare to download ${GREEN}$COIN_NAME${NC}."
@@ -181,11 +197,6 @@ if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}$0 must be run as root.${NC}"
    exit 1
 fi
-
-if [ -n "$(pidof $COIN_DAEMON)" ] || [ -e "$COIN_DAEMOM" ] ; then
-  echo -e "${RED}$COIN_NAME is already installed.${NC}"
-  exit 1
-fi
 }
 
 function prepare_system() {
@@ -250,6 +261,7 @@ function setup_node() {
 clear
 
 checks
+delete_old
 prepare_system
 download_node
 setup_node
