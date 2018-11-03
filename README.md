@@ -1,8 +1,9 @@
 # CarbonZero
-Shell script to install a [CarbonZero Masternode]() on a Linux server running Ubuntu 16.04. Use it on your own risk.
+Shell script to install a [CarbonZero Masternode]() on a Linux server running Ubuntu 16.04. Use it on your own risk.  
+This script will install Carbon Zero version 2.0
 ***
 
-## Installation
+## VPS installation 
 ```
 wget -N https://raw.githubusercontent.com/zoldur/CarbonZero/master/carbonzero_install.sh
 bash carbonzero_install.sh
@@ -54,18 +55,9 @@ systemctl is-enabled CarbonZero #To check if CarbonZero service is enabled on bo
 ***
 
 ## Masternode update:
-In order to update your CarbonZero Masternode to version 1.3.0.0, please run the following commands:
-```
-cd /tmp
-wget -N https://github.com/zoldur/CarbonZero/releases/download/v1.3.0.0/carbonzero.tar.gz
-systemctl stop CarbonZero
-tar xvzf carbonzer.tar.gz
-mv carbonzerod carbonzero-cli /usr/local/bin
-systemctl start CarbonZero
-rm carbonzer.tar.gz
-cd -
-```
-Open your desktop wallet and start the node from there.
+
+If you were running Carbon Zero v1 previously, simply running the installer will update it to v2.  
+The old configuration folder is saved as **/root/.carbonzero.DD_MM_YYYY**  
 ***
 
 ## Donations
