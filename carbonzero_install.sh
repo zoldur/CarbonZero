@@ -6,7 +6,7 @@ CONFIGFOLDER='/root/.carbonzero'
 COIN_DAEMON='carbonzerod'
 COIN_CLI='carbonzero-cli'
 COIN_PATH='/usr/local/bin/'
-COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v2.0.0.0/carbonzero.tar.gz'
+COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v2.0.0.1/carbonzero.tar.gz'
 COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 COIN_NAME='CarbonZero'
 COIN_PORT=51212
@@ -23,20 +23,20 @@ NC='\033[0m'
 function delete_old() {
   echo -e "Checking and backing up old Carbon installation"
   apt -y install jq >/dev/null 2>&1
-  PROTOCOL_VERSION=$($COIN_PATH$COIN_CLI getinfo 2>/dev/null | jq .protocolversion)
-  if [[ "$PROTOCOL_VERSION" -eq 70933 ]]
+  VERSION=$($COIN_PATH$COIN_CLI getinfo 2>/dev/null | jq .version)
+  if [[ "$VERSION" -eq 2000001 ]]
   then
     echo -e "${RED}$COIN_NAME is already installed.${NC}"
     exit 0
-  elif [[ "$PROTOCOL_VERSION" -lt 70933 ]]
+  elif [[ "$VERSION" -lt 2000001 ]]
   then
     systemctl stop $COIN_NAME.service >/dev/null 2>&1
     $COIN_PATH$COIN_CLI stop >/dev/null 2>&1
     rm $COIN_PATH$COIN_DAEMON $COIN_PATH$COIN_CLI >/dev/null 2>&1
     rm /etc/systemd/system/$COIN_NAME.service >/dev/null 2>&1
-    mv $CONFIGFOLDER $CONFIGFOLDER.$(echo $(date +%d-%m-%Y))
+    rm -r $CONFIGFOLDER/{backups,blocks,carbonzerod.pid,chainstate,database,db.log,sporks,zerocoin}
   else
-    echo "Continue with normal installation" 
+    echo "Continue with normal installation"
   fi
 }
 
