@@ -11,6 +11,7 @@ COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 COIN_NAME='CarbonZero'
 COIN_PORT=51212
 RPC_PORT=51213
+LATEST_VERSION=2000001
 
 NODEIP=$(curl -s4 api.ipify.org)
 
@@ -20,23 +21,30 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 
-function delete_old() {
-  echo -e "Checking and backing up old Carbon installation"
+function update_node() {
+  echo -e "Checking if ${RED}$COIN_NAME is already installed and running the lastest version.${NC}"
+  systemctl daemon-reload
+  sleep 3
+  systemctl start $COIN_NAME.service >/dev/null 2>&1
   apt -y install jq >/dev/null 2>&1
-  VERSION=$($COIN_PATH$COIN_CLI getinfo 2>/dev/null | jq .version)
-  if [[ "$VERSION" -eq 2000001 ]]
+  VERSION=$($COIN_PATH$COIN_CLI getinfo 2>/dev/null| jq .version)
+  if [[ "$VERSION" -eq "$LATEST_VERSION" ]]
   then
-    echo -e "${RED}$COIN_NAME is already installed.${NC}"
+    echo -e "${RED}$COIN_NAME is already installed and running the lastest version.${NC}"
     exit 0
-  elif [[ "$VERSION" -lt 2000001 ]]
+  elif [[ -z "$VERSION" ]]
+  then
+    echo "Continue with the normal installation"
+  elif [[ "$VERSION" -ne "$LATEST_VERSION" ]]
   then
     systemctl stop $COIN_NAME.service >/dev/null 2>&1
     $COIN_PATH$COIN_CLI stop >/dev/null 2>&1
+    sleep 10 >/dev/null 2>&1
     rm $COIN_PATH$COIN_DAEMON $COIN_PATH$COIN_CLI >/dev/null 2>&1
-    rm /etc/systemd/system/$COIN_NAME.service >/dev/null 2>&1
-    rm -r $CONFIGFOLDER/{backups,blocks,carbonzerod.pid,chainstate,database,db.log,sporks,zerocoin}
-  else
-    echo "Continue with normal installation"
+    download_node
+    configure_systemd
+    echo -e "${RED}$COIN_NAME updated to the latest version!${NC}"
+    exit 0
   fi
 }
 
@@ -265,7 +273,7 @@ function setup_node() {
 clear
 
 checks
-delete_old
+update_node
 prepare_system
 download_node
 setup_node
