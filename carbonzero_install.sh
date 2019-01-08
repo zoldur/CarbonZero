@@ -6,12 +6,12 @@ CONFIGFOLDER='/root/.carbonzero'
 COIN_DAEMON='carbonzerod'
 COIN_CLI='carbonzero-cli'
 COIN_PATH='/usr/local/bin/'
-COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v2.0.0.1/carbonzero.tar.gz'
+COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v2.0.0.2/carbonzero.tar.gz'
 COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 COIN_NAME='CarbonZero'
 COIN_PORT=51212
 RPC_PORT=51213
-LATEST_VERSION=2000001
+LATEST_VERSION=2000002
 
 NODEIP=$(curl -s4 api.ipify.org)
 
