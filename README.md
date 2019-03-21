@@ -1,4 +1,4 @@
-#`:w`:wq# CarbonZero
+## CarbonZero
 Shell script to install a [CarbonZero Masternode]() on a Linux server running Ubuntu 16.04. Use it on your own risk.
 This script will install Carbon Zero version 2.1.0
 ***
