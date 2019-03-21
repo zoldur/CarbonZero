@@ -6,12 +6,12 @@ CONFIGFOLDER='/root/.carbonzero'
 COIN_DAEMON='carbonzerod'
 COIN_CLI='carbonzero-cli'
 COIN_PATH='/usr/local/bin/'
-COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v2.0.0.2/carbonzero.tar.gz'
+COIN_TGZ='https://github.com/zoldur/CarbonZero/releases/download/v2.1.0.0/carbonzero.tar.gz'
 COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 COIN_NAME='CarbonZero'
 COIN_PORT=51212
 RPC_PORT=51213
-LATEST_VERSION=2000002
+LATEST_VERSION=2010000
 
 NODEIP=$(curl -s4 api.ipify.org)
 
@@ -41,7 +41,7 @@ function update_node() {
     $COIN_PATH$COIN_CLI stop >/dev/null 2>&1
     sleep 10 >/dev/null 2>&1
     rm $COIN_PATH$COIN_DAEMON $COIN_PATH$COIN_CLI >/dev/null 2>&1
-    rm -r $CONFIGFOLDER/{backups,blocks,budget.dat,chainstate,database,db.log,fee_estimates.dat,mncache.dat,mnpayments.dat,peers.dat,sporks,zerocoin} >/dev/null 2>&1
+    rm -r $CONFIGFOLDER/{backups,blocks,budget.dat,chainstate,database,db.log,fee_estimates.dat,mncache.dat,mnpayments.dat,peers.dat,sporks} >/dev/null 2>&1
     download_node
     configure_systemd
     echo -e "${RED}$COIN_NAME updated to the latest version!${NC}"
